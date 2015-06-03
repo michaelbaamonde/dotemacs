@@ -7,8 +7,10 @@
 	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(defvar my-packages '(cider
+(defvar my-packages '(ac-cider
+                      cider
 		      clojure-mode
+                      company
 		      darkburn-theme
 		      evil
 		      evil-leader
@@ -92,7 +94,9 @@
 
 (prefer-coding-system 'utf-8)
 
+;; Parens
 (show-paren-mode 1)
+
 
 ;; Lines should be 80 characters wide, not 72
 (setq fill-column 80)
@@ -124,6 +128,9 @@
 
 ;; No startup message.
 (setq inhibit-startup-message t)
+
+;; Always indent upon RET
+(define-key global-map (kbd "RET") 'newline-and-indent)
 
 ;; Evil
 (setq evil-want-C-u-scroll t)
@@ -157,6 +164,13 @@
   "wm"  'toggle-maximize-buffer
   "ws"  'split-window-below
   "wv"  'split-window-right)
+
+;; Buffer management
+(evil-leader/set-key
+  "k"  'evil-delete-buffer
+  "d"  'dired
+  "p"  'previous-buffer
+  "!"  'shell-command)
 
 ;; Helm
 (helm-mode 1)
@@ -223,7 +237,34 @@
   (bind-key "q" 'magit-quit-session magit-status-mode-map))
 
 ;; Clojure
+
+;; Paredit
 (add-hook 'clojure-mode-hook 'paredit-mode)
+
+;; Rainbow parens
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+
+;; Cider
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
+
+(require 'ac-cider)
+(add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+(add-hook 'cider-mode-hook 'ac-cider-setup)
+(add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+(eval-after-load "auto-complete"
+  '(progn
+     (add-to-list 'ac-modes 'cider-mode)
+     (add-to-list 'ac-modes 'cider-repl-mode)))
+
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+
+(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
+
+;;(add-hook 'clojure-mode-hook '(lambda ()
+;;  (local-set-key (kbd "RET") 'newline-and-indent)))
 
 ;; Text editing
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -235,6 +276,8 @@
              (setq tab-width 2)
              (setq indent-line-function (quote insert-tab))))
 
+(setq require-final-newline t)
+
 ;; Shell mode
 (setq sh-indent-for-then 0)
 (setq sh-indent-for-do 0)
@@ -244,3 +287,6 @@
 (setq sh-indent-comment t)
 (setq sh-basic-offset 2)
 (setq sh-indentation 2)
+
+;; Company
+(add-hook 'after-init-hook 'global-company-mode)
