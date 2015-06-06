@@ -34,6 +34,9 @@
 ;; Colors
 (load-theme 'darkburn t)
 
+(custom-set-faces
+ '(region ((t (:background "dim gray")))))
+
 ;; Font
 (set-face-attribute 'default nil :height 100)
 (set-default-font "Inconsolata")
@@ -134,13 +137,26 @@
 
 ;; Evil
 (setq evil-want-C-u-scroll t)
+
+;; Turn on evil-mode by default.
 (evil-mode 1)
+
+;; Vim's default insert state is useless.
+(defalias 'evil-insert-state 'evil-emacs-state)
+
+;; Change the cursor color based on state.
+(setq evil-emacs-state-cursor '(box "cyan")
+      evil-normal-state-cursor '(box "white"))
+
+;; ESC in emacs state should get us back to normal mode.
+(global-set-key (kbd "<escape>") 'evil-normal-state)
+
+;; C-c C-c is a nice alternative to ESC, as well.
+(global-set-key (kbd "C-c C-c") 'evil-normal-state)
 
 ;; Evil Leader
 (require 'evil-leader) ;; Weird bug.
 (setq global-evil-leader-mode t)
-
-;; Window movement
 
 ;; From https://gist.github.com/3402786
 (defun toggle-maximize-buffer ()
@@ -150,6 +166,9 @@
     (progn
       (set-register '_ (list (current-window-configuration)))
       (delete-other-windows))))
+
+;; Possibly the only ergonomic setup for laptop keyboards.
+(evil-leader/set-leader "<SPC>")
 
 (evil-leader/set-key
   "wc"  'delete-window
@@ -163,15 +182,39 @@
   "wl"  'evil-window-right
   "wm"  'toggle-maximize-buffer
   "ws"  'split-window-below
-  "wv"  'split-window-right)
+  "wv"  'split-window-right
+  "k"   'evil-delete-buffer
+  "d"   'dired
+  "p"   'previous-buffer
+  "!"   'shell-command
+  "j"   'ace-jump-line-mode
+  "f"   'helm-find-files
+  "l"   'helm-locate
+  "y"   'helm-show-kill-ring
+  "t"   'helm-top
+  "m"   'helm-man-woman
+  "o"   'helm-occur
+  ":"   'helm-M-x
+  "b"   'helm-mini
+  "a"   'helm-git-grep
+  "g"   'magit-status)
 
-;; Buffer management
-(evil-leader/set-key
-  "k"  'evil-delete-buffer
-  "d"  'dired
-  "p"  'previous-buffer
-  "!"  'shell-command
-  "j"  'ace-jump-line-mode)
+;; Ace-window
+(global-set-key (kbd "M-p") 'ace-window)
+
+(setq aw-dispatch-always t)
+
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+
+(defvar aw-dispatch-alist
+'((?x aw-delete-window " Ace - Delete Window")
+    (?m aw-swap-window " Ace - Swap Window")
+    (?n aw-flip-window)
+    (?h aw-split-window-vert " Ace - Split Vert Window")
+    (?v aw-split-window-horz " Ace - Split Horz Window")
+    (?i delete-other-windows " Ace - Maximize Window")
+    (?o toggle-maximize-buffer))
+"List of actions for `aw-dispatch-default'.")
 
 ;; Helm
 (helm-mode 1)
@@ -191,30 +234,7 @@
             helm-always-two-windows t
             helm-autoresize-mode t)
 
-(defun helm-evil-leader-setup ()
-  (evil-leader/set-leader "<SPC>")
-  (eval-after-load "helm"
-    (progn
-      (evil-leader/set-key
-        "f" 'helm-find-files
-        "l" 'helm-locate
-        "y" 'helm-show-kill-ring
-        "t" 'helm-top
-        "m" 'helm-man-woman
-        "o" 'helm-occur
-        ":" 'helm-M-x
-        "b" 'helm-mini
-        "a" 'helm-git-grep))))
-
-(helm-evil-leader-setup)
-
 ;; Magit
-(defun magit-evil-leader-setup ()
-  (evil-leader/set-leader "<SPC>")
-  (eval-after-load "magit"
-    (evil-leader/set-key "g" 'magit-status)))
-
-(magit-evil-leader-setup)
 
 ;; Full-screen magit-status
 (defadvice magit-status (around magit-fullscreen activate)
@@ -264,9 +284,6 @@
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
 
-;;(add-hook 'clojure-mode-hook '(lambda ()
-;;  (local-set-key (kbd "RET") 'newline-and-indent)))
-
 ;; Text editing
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -291,20 +308,3 @@
 
 ;; Company
 (add-hook 'after-init-hook 'global-company-mode)
-
-;; Ace-window
-(global-set-key (kbd "M-p") 'ace-window)
-
-(setq aw-dispatch-always t)
-
-(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-
-(defvar aw-dispatch-alist
-'((?x aw-delete-window " Ace - Delete Window")
-    (?m aw-swap-window " Ace - Swap Window")
-    (?n aw-flip-window)
-    (?h aw-split-window-vert " Ace - Split Vert Window")
-    (?v aw-split-window-horz " Ace - Split Horz Window")
-    (?i delete-other-windows " Ace - Maximize Window")
-    (?o toggle-maximize-buffer))
-"List of actions for `aw-dispatch-default'.")
