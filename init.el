@@ -170,7 +170,8 @@
   "k"  'evil-delete-buffer
   "d"  'dired
   "p"  'previous-buffer
-  "!"  'shell-command)
+  "!"  'shell-command
+  "j"  'ace-jump-line-mode)
 
 ;; Helm
 (helm-mode 1)
