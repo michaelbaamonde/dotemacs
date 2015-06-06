@@ -12,7 +12,7 @@
 		      clojure-mode
                       company
 		      darkburn-theme
-		      eviln
+		      evil
 		      evil-leader
 		      helm
 		      helm-git-grep
@@ -132,14 +132,6 @@
 ;; Always indent upon RET
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
-;; Evil
-(setq evil-want-C-u-scroll t)
-(evil-mode 1)
-
-;; Evil Leader
-(require 'evil-leader) ;; Weird bug.
-(setq global-evil-leader-mode t)
-
 ;; Window movement
 
 ;; From https://gist.github.com/3402786
@@ -150,27 +142,6 @@
     (progn
       (set-register '_ (list (current-window-configuration)))
       (delete-other-windows))))
-
-(evil-leader/set-key
-  "wc"  'delete-window
-  "wH"  'evil-window-move-far-left
-  "wh"  'evil-window-left
-  "wJ"  'evil-window-move-very-bottom
-  "wj"  'evil-window-down
-  "wK"  'evil-window-move-very-top
-  "wk"  'evil-window-up
-  "wL"  'evil-window-move-far-right
-  "wl"  'evil-window-right
-  "wm"  'toggle-maximize-buffer
-  "ws"  'split-window-below
-  "wv"  'split-window-right)
-
-;; Buffer management
-(evil-leader/set-key
-  "k"  'evil-delete-buffer
-  "d"  'dired
-  "p"  'previous-buffer
-  "!"  'shell-command)
 
 ;; Helm
 (helm-mode 1)
@@ -190,30 +161,14 @@
             helm-always-two-windows t
             helm-autoresize-mode t)
 
-(defun helm-evil-leader-setup ()
-  (evil-leader/set-leader "<SPC>")
-  (eval-after-load "helm"
-    (progn
-      (evil-leader/set-key
-        "f" 'helm-find-files
-        "l" 'helm-locate
-        "y" 'helm-show-kill-ring
-        "t" 'helm-top
-        "m" 'helm-man-woman
-        "o" 'helm-occur
-        ":" 'helm-M-x
-        "b" 'helm-mini
-        "a" 'helm-git-grep))))
-
-(helm-evil-leader-setup)
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-c g") 'helm-git-grep)
 
 ;; Magit
-(defun magit-evil-leader-setup ()
-  (evil-leader/set-leader "<SPC>")
-  (eval-after-load "magit"
-    (evil-leader/set-key "g" 'magit-status)))
 
-(magit-evil-leader-setup)
+(global-set-key (kbd "C-c s") 'magit-status)
 
 ;; Full-screen magit-status
 (defadvice magit-status (around magit-fullscreen activate)
@@ -307,3 +262,25 @@
     (?i delete-other-windows " Ace - Maximize Window")
     (?o toggle-maximize-buffer))
 "List of actions for `aw-dispatch-default'.")
+
+;; Ace-jump
+(global-set-key (kbd "M-n") 'ace-jump-line-mode)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
+ '(custom-safe-themes (quote ("51b8c4adab95ff23b8f5cf07ea0b9805c8662936fe0d877d61a0dd02b6adc5f6" "3ff96689086ebc06f5f813a804f7114195b7c703ed2f19b51e10026723711e33" default)))
+ '(fci-rule-color "#383838")
+ '(vc-annotate-background "#2B2B2B")
+ '(vc-annotate-color-map (quote ((20 . "#BC8383") (40 . "#CC9393") (60 . "#DFAF8F") (80 . "#D0BF8F") (100 . "#E0CF9F") (120 . "#F0DFAF") (140 . "#5F7F5F") (160 . "#7F9F7F") (180 . "#8FB28F") (200 . "#9FC59F") (220 . "#AFD8AF") (240 . "#BFEBBF") (260 . "#93E0E3") (280 . "#6CA0A3") (300 . "#7CB8BB") (320 . "#8CD0D3") (340 . "#94BFF3") (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3"))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(region ((t (:background "dim gray")))))
+(put 'upcase-region 'disabled nil)
