@@ -12,7 +12,7 @@
 		      clojure-mode
                       company
 		      darkburn-theme
-		      eviln
+		      evil
 		      evil-leader
 		      helm
 		      helm-git-grep
