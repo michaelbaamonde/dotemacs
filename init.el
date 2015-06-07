@@ -134,6 +134,9 @@
 ;; No startup message.
 (setq inhibit-startup-message t)
 
+;; Use text-mode for the scratch buffer.
+(setq initial-major-mode 'text-mode)
+
 ;; Always indent upon RET
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
