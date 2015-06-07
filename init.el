@@ -7,9 +7,7 @@
 	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(defvar my-packages '(ace-jump
-                      ace-window
-                      ac-cider
+(defvar my-packages '(ac-cider
                       cider
 		      clojure-mode
                       company
@@ -20,6 +18,8 @@
 		      helm-git-grep
                       magit
                       paredit
+                      savehist
+                      saveplace
                       use-package))
 
 (when (null package-archive-contents)
