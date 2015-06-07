@@ -7,7 +7,9 @@
 	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(defvar my-packages '(ac-cider
+(defvar my-packages '(ace-jump
+                      ace-window
+                      ac-cider
                       cider
 		      clojure-mode
                       company
@@ -285,9 +287,15 @@
 (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
 
 ;; Text editing
+
+;; Let's clean up after ourselves.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Auto-fill
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'text-mode-hook '(lambda() (set-fill-column 80)))
+
+;; Tabs FTL.
 (add-hook 'text-mode-hook
           '(lambda ()
              (setq indent-tabs-mode nil)
