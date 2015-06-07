@@ -262,13 +262,13 @@
   :config
   (bind-key "q" 'magit-quit-session magit-status-mode-map))
 
-;; Clojure
-
 ;; Paredit
 (add-hook 'clojure-mode-hook 'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'paredit-mode)
 
 ;; Rainbow parens
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
 ;; Cider
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
