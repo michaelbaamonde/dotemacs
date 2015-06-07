@@ -319,6 +319,13 @@
 
 ;; Company
 (add-hook 'after-init-hook 'global-company-mode)
+
 ;; Regex-aware search should be the default.
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+
+;; Yasnippet
+(add-to-list 'load-path
+              "~/.emacs.d/plugins/yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
