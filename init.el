@@ -1,4 +1,4 @@
-;; package installation/initialization
+; package installation/initialization
 (require 'package)
 
 (add-to-list 'package-archives
@@ -146,6 +146,8 @@
 ;; Turn on evil-mode by default.
 (evil-mode 1)
 
+
+
 ;; Vim's default insert state is useless.
 (defalias 'evil-insert-state 'evil-emacs-state)
 
@@ -156,8 +158,8 @@
 ;; ESC in emacs state should get us back to normal mode.
 (global-set-key (kbd "<escape>") 'evil-normal-state)
 
-;; C-c C-c is a nice alternative to ESC, as well.
-(global-set-key (kbd "C-c C-c") 'evil-normal-state)
+;; C-c C-j is a nice alternative to ESC, as well.
+(global-set-key (kbd "C-c C-j") 'evil-normal-state)
 
 ;; Evil Leader
 (require 'evil-leader) ;; Weird bug.
@@ -206,6 +208,11 @@
 
 ;; Ace-window
 (global-set-key (kbd "M-p") 'ace-window)
+
+;; Ace-jump
+(global-set-key (kbd "M-l") 'ace-jump-line-mode)
+
+(global-set-key (kbd "M-c") 'ace-jump-mode)
 
 (setq aw-dispatch-always t)
 
@@ -290,15 +297,9 @@
 (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
 
 ;; Text editing
-
-;; Let's clean up after ourselves.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; Auto-fill
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'text-mode-hook '(lambda() (set-fill-column 80)))
-
-;; Tabs FTL.
 (add-hook 'text-mode-hook
           '(lambda ()
              (setq indent-tabs-mode nil)
@@ -327,5 +328,16 @@
 ;; Yasnippet
 (add-to-list 'load-path
               "~/.emacs.d/plugins/yasnippet")
+
 (require 'yasnippet)
 (yas-global-mode 1)
+
+;; Emacs mode bindings
+
+;; Helm
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-c g") 'helm-git-grep)
+(global-set-key (kbd "C-c o") 'helm-occur)
+(global-set-key (kbd "C-c r") 'helm-show-kill-ring)
+(global-set-key (kbd "C-c m") 'helm-man-woman)
