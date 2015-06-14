@@ -1,4 +1,4 @@
-;; package installation/initialization
+; Package installation/initialization
 (require 'package)
 
 (add-to-list 'package-archives
@@ -8,17 +8,20 @@
 (package-initialize)
 
 (defvar my-packages '(ac-cider
+                      ace-window
+                      ace-jump
                       cider
 		      clojure-mode
                       company
 		      darkburn-theme
-		      evil
-		      evil-leader
 		      helm
 		      helm-git-grep
                       magit
                       paredit
-                      use-package))
+                      savehist
+                      saveplace
+                      use-package
+                      yasnippet))
 
 (when (null package-archive-contents)
   (package-refresh-contents))
@@ -29,10 +32,11 @@
 
 (require 'use-package)
 
-;; Appearance
-
 ;; Colors
 (load-theme 'darkburn t)
+
+(custom-set-faces
+ '(region ((t (:background "dim gray")))))
 
 ;; Font
 (set-face-attribute 'default nil :height 100)
@@ -46,10 +50,9 @@
 
 (when (window-system)
   (set-scroll-bar-mode 'nil)
+  (tool-bar-mode -1)
   (mouse-wheel-mode t)
   (tooltip-mode -1))
-
-(tool-bar-mode -1)
 
 ;; Don't blink.
 (blink-cursor-mode -1)
@@ -97,7 +100,6 @@
 ;; Parens
 (show-paren-mode 1)
 
-
 ;; Lines should be 80 characters wide, not 72
 (setq fill-column 80)
 
@@ -129,10 +131,11 @@
 ;; No startup message.
 (setq inhibit-startup-message t)
 
+;; Use text-mode for the scratch buffer.
+(setq initial-major-mode 'text-mode)
+
 ;; Always indent upon RET
 (define-key global-map (kbd "RET") 'newline-and-indent)
-
-;; Window movement
 
 ;; From https://gist.github.com/3402786
 (defun toggle-maximize-buffer ()
@@ -143,7 +146,32 @@
       (set-register '_ (list (current-window-configuration)))
       (delete-other-windows))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Ace-window
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(global-set-key (kbd "C-c w") 'ace-window)
+
+;; Ace-jump
+(global-set-key (kbd "M-l") 'ace-jump-line-mode)
+
+(global-set-key (kbd "M-c") 'ace-jump-mode)
+
+(setq aw-dispatch-always t)
+
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+
+(defvar aw-dispatch-alist
+  '((?x aw-delete-window )
+    (?m aw-swap-window)
+    (?h aw-split-window-vert)
+    (?v aw-split-window-horz)
+    (?o toggle-maximize-buffer)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helm
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (helm-mode 1)
 
 ;; Switch <TAB> and C-z
@@ -161,14 +189,9 @@
             helm-always-two-windows t
             helm-autoresize-mode t)
 
-(global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-c g") 'helm-git-grep)
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Magit
-
-(global-set-key (kbd "C-c s") 'magit-status)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Full-screen magit-status
 (defadvice magit-status (around magit-fullscreen activate)
@@ -191,13 +214,21 @@
   :config
   (bind-key "q" 'magit-quit-session magit-status-mode-map))
 
-;; Clojure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Parens
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Paredit
 (add-hook 'clojure-mode-hook 'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'paredit-mode)
 
 ;; Rainbow parens
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Clojure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Cider
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
@@ -207,6 +238,7 @@
 (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
 (add-hook 'cider-mode-hook 'ac-cider-setup)
 (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+
 (eval-after-load "auto-complete"
   '(progn
      (add-to-list 'ac-modes 'cider-mode)
@@ -217,11 +249,10 @@
 
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
-
-;;(add-hook 'clojure-mode-hook '(lambda ()
-;;  (local-set-key (kbd "RET") 'newline-and-indent)))
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Text editing
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'text-mode-hook '(lambda() (set-fill-column 80)))
@@ -233,7 +264,10 @@
 
 (setq require-final-newline t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Shell mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq sh-indent-for-then 0)
 (setq sh-indent-for-do 0)
 (setq sh-indent-after-do '+)
@@ -246,41 +280,39 @@
 ;; Company
 (add-hook 'after-init-hook 'global-company-mode)
 
-;; Ace-window
-(global-set-key (kbd "M-p") 'ace-window)
+;; Yasnippet
+(add-to-list 'load-path
+              "~/.emacs.d/plugins/yasnippet")
 
-(setq aw-dispatch-always t)
+(require 'yasnippet)
+(yas-global-mode 1)
 
-(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+;; Key bindings
 
-(defvar aw-dispatch-alist
-'((?x aw-delete-window " Ace - Delete Window")
-    (?m aw-swap-window " Ace - Swap Window")
-    (?n aw-flip-window)
-    (?h aw-split-window-vert " Ace - Split Vert Window")
-    (?v aw-split-window-horz " Ace - Split Horz Window")
-    (?i delete-other-windows " Ace - Maximize Window")
-    (?o toggle-maximize-buffer))
-"List of actions for `aw-dispatch-default'.")
+;; Helm
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-c a") 'helm-git-grep)
+(global-set-key (kbd "C-c o") 'helm-occur)
+(global-set-key (kbd "C-c r") 'helm-show-kill-ring)
+(global-set-key (kbd "C-c m") 'helm-man-woman)
 
-;; Ace-jump
-(global-set-key (kbd "M-n") 'ace-jump-line-mode)
+;; Magit
+(global-set-key (kbd "C-c g") 'magit-status)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
- '(custom-safe-themes (quote ("51b8c4adab95ff23b8f5cf07ea0b9805c8662936fe0d877d61a0dd02b6adc5f6" "3ff96689086ebc06f5f813a804f7114195b7c703ed2f19b51e10026723711e33" default)))
- '(fci-rule-color "#383838")
- '(vc-annotate-background "#2B2B2B")
- '(vc-annotate-color-map (quote ((20 . "#BC8383") (40 . "#CC9393") (60 . "#DFAF8F") (80 . "#D0BF8F") (100 . "#E0CF9F") (120 . "#F0DFAF") (140 . "#5F7F5F") (160 . "#7F9F7F") (180 . "#8FB28F") (200 . "#9FC59F") (220 . "#AFD8AF") (240 . "#BFEBBF") (260 . "#93E0E3") (280 . "#6CA0A3") (300 . "#7CB8BB") (320 . "#8CD0D3") (340 . "#94BFF3") (360 . "#DC8CC3"))))
- '(vc-annotate-very-old-color "#DC8CC3"))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(region ((t (:background "dim gray")))))
-(put 'upcase-region 'disabled nil)
+;; Regex-aware search should be the default.
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+
+;; Misc
+
+;; Amazingly annoying to copy a line into the kill ring.
+;; Stolen from http://emacswiki.org/emacs/CopyingWholeLines
+(defun copy-line (arg)
+  "Copy lines (as many as prefix argument) in the kill ring"
+  (interactive "p")
+  (kill-ring-save (line-beginning-position)
+                  (line-beginning-position (+ 1 arg)))
+  (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+
+(global-set-key (kbd "C-c y") 'copy-line)
