@@ -330,7 +330,7 @@
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 
-;; Misc
+;; Misc editing
 
 ;; Amazingly annoying to copy a line into the kill ring.
 ;; Stolen from http://emacswiki.org/emacs/CopyingWholeLines
@@ -342,3 +342,28 @@
   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
 
 (global-set-key (kbd "C-c y") 'copy-line)
+
+;; Stolen from http://whattheemacsd.com/editing-defuns.el-01.html
+(defun open-line-below ()
+  (interactive)
+  (end-of-line)
+  (newline)
+  (indent-for-tab-command))
+
+(defun open-line-above ()
+  (interactive)
+  (beginning-of-line)
+  (newline)
+  (forward-line -1)
+  (indent-for-tab-command))
+
+(global-set-key (kbd "<C-return>") 'open-line-below)
+(global-set-key (kbd "<M-return>") 'open-line-above)
+
+;; Write backup files to own directory
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
+
+;; Make backups of files, even when they're in version control
+(setq vc-make-backup-files t)
