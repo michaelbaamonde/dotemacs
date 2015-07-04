@@ -379,3 +379,8 @@
 
 ;; Make backups of files, even when they're in version control
 (setq vc-make-backup-files t)
+
+;; Yes, I really do want to quit.
+(require 'cl)
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+           (flet ((process-list ())) ad-do-it))
