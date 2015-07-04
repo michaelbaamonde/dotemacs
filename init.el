@@ -233,6 +233,18 @@
 (add-hook 'clojure-mode-hook 'paredit-mode)
 (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
 
+(defun forward-transpose-sexps ()
+  (interactive)
+  (paredit-forward)
+  (transpose-sexps 1)
+  (paredit-backward))
+
+(defun backward-transpose-sexps ()
+  (interactive)
+  (transpose-sexps 1)
+  (paredit-backward)
+  (paredit-backward))
+
 ;; Rainbow parens
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
