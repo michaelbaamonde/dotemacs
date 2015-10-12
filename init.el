@@ -5,24 +5,22 @@
 (require 'package)
 
 (add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
-	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 (defvar my-packages '(ac-cider
                       ace-window
-                      ace-jump
                       cider
-		      clojure-mode
+                      clojure-mode
                       company
-		      darkburn-theme
-		      helm
-		      helm-git-grep
+                      darkburn-theme
+                      helm
+                      helm-git-grep
                       magit
                       paredit
                       savehist
-                      saveplace
                       use-package
                       yasnippet))
 
@@ -34,6 +32,7 @@
     (package-install p)))
 
 (require 'use-package)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Appearance and defaults
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -117,7 +116,6 @@
 
 ;; Change Cursor
 (setq-default cursor-type 'box)
-(blink-cursor-mode -1)
 
 ;; Remove alarm (bell) on scroll
 (setq ring-bell-function 'ignore)
@@ -143,6 +141,10 @@
 ;; Always indent upon RET
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Ace-window
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; From https://gist.github.com/3402786
 (defun toggle-maximize-buffer ()
   (interactive)
@@ -151,10 +153,6 @@
     (progn
       (set-register '_ (list (current-window-configuration)))
       (delete-other-windows))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ace-window
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (global-set-key (kbd "C-c w") 'ace-window)
 
@@ -225,13 +223,15 @@
   :config
   (bind-key "q" 'magit-quit-session magit-status-mode-map))
 
+(setq magit-auto-revert-mode t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Parens
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Paredit
-(add-hook 'clojure-mode-hook 'paredit-mode)
-(add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+(add-hook 'clojure-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
 (defun forward-transpose-sexps ()
   (interactive)
@@ -256,6 +256,8 @@
 ;; Cider
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 (add-hook 'cider-repl-mode-hook 'paredit-mode)
+(add-hook 'clojure-mode-hook 'whitespace-mode)
+
 
 (require 'ac-cider)
 (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
@@ -270,8 +272,10 @@
 (defun set-auto-complete-as-completion-at-point-function ()
   (setq completion-at-point-functions '(auto-complete)))
 
-(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'auto-complete-mode-hook
+          'set-auto-complete-as-completion-at-point-function)
+(add-hook 'cider-mode-hook
+          'set-auto-complete-as-completion-at-point-function)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Text editing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -384,3 +388,15 @@
 (require 'cl)
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
            (flet ((process-list ())) ad-do-it))
+
+;; Uniquely name buffers in a sane manner
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+;; Sonian-specific Elisp
+
+(let ((sonian "~/code/sonian/sa-safe/.elisp/sonian.el"))
+  (when (file-exists-p sonian)
+    (message "Loading Sonian extras...")
+    (load (expand-file-name sonian))
+    (require 'sonian)))
