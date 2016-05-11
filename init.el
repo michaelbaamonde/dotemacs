@@ -12,17 +12,18 @@
 
 (defvar my-packages '(ac-cider
                       ace-window
+                      avy
                       cider
                       clojure-mode
                       company
                       darkburn-theme
+                      es-mode
+                      haskell-mode
                       helm
                       helm-git-grep
                       magit
                       paredit
-                      savehist
-                      use-package
-                      yasnippet))
+                      use-package))
 
 (when (null package-archive-contents)
   (package-refresh-contents))
@@ -41,6 +42,10 @@
 (load-theme 'darkburn t)
 
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(region ((t (:background "dim gray")))))
 
 ;; Font
@@ -156,10 +161,10 @@
 
 (global-set-key (kbd "C-c w") 'ace-window)
 
-;; Ace-jump
-(global-set-key (kbd "M-l") 'ace-jump-line-mode)
+;; Ace/Avy
+(global-set-key (kbd "M-l") 'avy-goto-line)
 
-(global-set-key (kbd "M-c") 'ace-jump-mode)
+(global-set-key (kbd "M-c") 'avy-goto-char)
 
 (setq ace-jump-mode-scope 'window)
 
@@ -229,10 +234,6 @@
 ;; Parens
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Paredit
-(add-hook 'clojure-mode-hook 'enable-paredit-mode)
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-
 (defun forward-transpose-sexps ()
   (interactive)
   (paredit-forward)
@@ -245,10 +246,6 @@
   (paredit-backward)
   (paredit-backward))
 
-;; Rainbow parens
-(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Clojure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -256,8 +253,6 @@
 ;; Cider
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 (add-hook 'cider-repl-mode-hook 'paredit-mode)
-(add-hook 'clojure-mode-hook 'whitespace-mode)
-
 
 (require 'ac-cider)
 (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
@@ -318,21 +313,12 @@
 (add-hook 'after-init-hook 'global-company-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Yasnippet
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(add-to-list 'load-path
-              "~/.emacs.d/plugins/yasnippet")
-
-(require 'yasnippet)
-(yas-global-mode 1)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Helm
 (global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-c a") 'helm-git-grep)
 (global-set-key (kbd "C-c o") 'helm-occur)
@@ -393,10 +379,70 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
-;; Sonian-specific Elisp
+(setq transient-mark-mode t)
 
-(let ((sonian "~/code/sonian/sa-safe/.elisp/sonian.el"))
-  (when (file-exists-p sonian)
-    (message "Loading Sonian extras...")
-    (load (expand-file-name sonian))
-    (require 'sonian)))
+;; Paredit
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'clojure-mode-hook #'paredit-mode)
+
+;; Org
+(setq org-src-fontify-natively t
+      org-refile-targets '((nil . (:maxlevel . 2)))
+      org-default-notes-file "~/notes/work/notes.org"
+      org-return-follows-link t
+      org-babel-clojure-backend 'cider
+      org-confirm-babel-evaluate nil)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((clojure . t)
+   (elasticsearch . t)
+   (haskell . t)
+   (sh . t)
+   (ruby . t)
+   (python . t)))
+
+; add a default shebang header argument shell scripts
+(add-to-list 'org-babel-default-header-args:sh
+             '(:shebang . "#!/usr/bin/env bash"))
+
+(global-set-key
+ (kbd "C-c n")
+ (lambda ()
+   (interactive)
+   (find-file "~/notes/work/notes.org")))
+
+(global-set-key (kbd "C-c c") 'org-capture)
+
+;; Misc
+(put 'upcase-region 'disabled nil)
+
+(global-set-key (kbd "C-c s") 'shell)
+
+(global-set-key
+ (kbd "C-c e")
+ (lambda ()
+   (interactive)
+   (find-file "~/.emacs")))
+
+;;; Stolen from http://stackoverflow.com/questions/95631/open-a-file-with-su-sudo-inside-emacs
+(defun sudo-find-file (file-name)
+  "Like find file, but opens the file as root."
+  (interactive "FSudo Find File: ")
+  (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
+    (find-file tramp-file-name)))
+
+;; Elasticsearch
+(setq es-warn-on-delete-query nil)
+
+(global-set-key
+ (kbd "C-c l")
+ (lambda ()
+   (interactive)
+   (find-file "~/es-command.org")))
+
+;; Use Chrome for links
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
+
+(add-hook 'haskell-mode-hook 'haskell-indentation-mode)
