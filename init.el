@@ -254,7 +254,9 @@
   (setq magit-last-seen-setup-instructions "1.4.0")
   :config
   (bind-key "q" 'magit-quit-session magit-status-mode-map)
-  (setq magit-auto-revert-mode t))
+  (setq magit-auto-revert-mode t)
+  :bind
+  ("C-c g" . magit-status))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Clojure
@@ -325,9 +327,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Magit
-(global-set-key (kbd "C-c g") 'magit-status)
 
 ;; Regex-aware search should be the default.
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
