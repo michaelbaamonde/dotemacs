@@ -18,6 +18,7 @@
                       company
                       darkburn-theme
                       es-mode
+                      global-vi-tilde-fringe-mode
                       haskell-mode
                       helm
                       helm-git-grep
