@@ -220,6 +220,16 @@
    ("C-c r" . helm-show-kill-ring)
    ("C-c m" . helm-man-woman)))
 
+(use-package helm-swoop
+  :ensure t
+  :bind (("C-c ;" . helm-swoop)
+         ("C-c M-;" . helm-multi-swoop)))
+
+(use-package helm-descbinds
+  :ensure t
+  :bind ("C-h b" . helm-descbinds)
+  :init (fset 'describe-bindings 'helm-descbinds))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Magit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
