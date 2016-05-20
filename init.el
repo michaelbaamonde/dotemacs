@@ -37,26 +37,37 @@
 ;; Appearance and defaults
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package darkburn-theme
+;; (use-package darkburn-theme
+;;   :ensure t
+;;   :init (load-theme 'darkburn t))
+
+(use-package stekene-theme
   :ensure t
-  :init (load-theme 'darkburn t))
+  :init (load-theme 'stekene-dark t))
 
 (use-package smart-mode-line
   :ensure t
   :init
   (setq sml/no-confirm-load-theme t)
-  (setq sml/theme 'automatic)
+  (setq sml/theme 'dark)
   (sml/setup)
   :config
   (setq sml/shorten-directory t
         sml/shorten-modes t))
+
+(use-package paren-face
+  :ensure t
+  :init (global-paren-face-mode))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(magit-log-author ((t (:foreground "deep sky blue"))))
+ '(magit-log-sha1 ((t (:foreground "deep sky blue"))))
  '(region ((t (:background "dim gray"))))
+ '(secondary-selection ((t (:background "#5F5F5F"))))
  '(sml/filename ((t (:inherit sml/global :foreground "slate gray" :weight bold)))))
 
 ;; Font
@@ -447,3 +458,9 @@
       browse-url-generic-program "google-chrome")
 
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
