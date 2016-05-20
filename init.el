@@ -16,9 +16,7 @@
                       cider
                       clojure-mode
                       company
-                      darkburn-theme
                       es-mode
-                      global-vi-tilde-fringe-mode
                       haskell-mode
                       helm
                       helm-git-grep
@@ -39,8 +37,19 @@
 ;; Appearance and defaults
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Colors
-(load-theme 'darkburn t)
+(use-package darkburn-theme
+  :ensure t
+  :init (load-theme 'darkburn t))
+
+(use-package smart-mode-line
+  :ensure t
+  :init
+  (setq sml/no-confirm-load-theme t)
+  (setq sml/theme 'automatic)
+  (sml/setup)
+  :config
+  (setq sml/shorten-directory t
+        sml/shorten-modes t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -69,7 +78,9 @@
 (blink-cursor-mode -1)
 
 ;; Tildes
-(global-vi-tilde-fringe-mode t)
+(use-package vi-tilde-fringe
+  :ensure t
+  :init (global-vi-tilde-fringe-mode t))
 
 ;; Show full file path.
 (when window-system
@@ -447,3 +458,36 @@
       browse-url-generic-program "google-chrome")
 
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
+ '(custom-safe-themes
+   (quote
+    ("51b8c4adab95ff23b8f5cf07ea0b9805c8662936fe0d877d61a0dd02b6adc5f6" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+ '(fci-rule-color "#383838")
+ '(vc-annotate-background "#2B2B2B")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#BC8383")
+     (40 . "#CC9393")
+     (60 . "#DFAF8F")
+     (80 . "#D0BF8F")
+     (100 . "#E0CF9F")
+     (120 . "#F0DFAF")
+     (140 . "#5F7F5F")
+     (160 . "#7F9F7F")
+     (180 . "#8FB28F")
+     (200 . "#9FC59F")
+     (220 . "#AFD8AF")
+     (240 . "#BFEBBF")
+     (260 . "#93E0E3")
+     (280 . "#6CA0A3")
+     (300 . "#7CB8BB")
+     (320 . "#8CD0D3")
+     (340 . "#94BFF3")
+     (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3"))
