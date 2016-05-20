@@ -198,22 +198,27 @@
 ;; Helm
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(helm-mode 1)
-
-;; Switch <TAB> and C-z
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-(define-key helm-map (kbd "C-z")  'helm-select-action)
-
-;; Make sure this works in the terminal.
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-
-;; Better Helm defaults.
-(setq helm-prevent-escaping-from-minibuffer t
-            helm-split-window-in-side-p nil
-            helm-bookmark-show-location t
-            helm-buffers-fuzzy-matching t
-            helm-always-two-windows t
-            helm-autoresize-mode t)
+(use-package helm
+  :ensure t
+  :init (helm-mode 1)
+  :config
+  (setq helm-prevent-escaping-from-minibuffer t
+        helm-split-window-in-side-p nil
+        helm-bookmark-show-location t
+        helm-buffers-fuzzy-matching t
+        helm-always-two-windows t
+        helm-autoresize-mode t)
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+  (define-key helm-map (kbd "C-z")  'helm-select-action)
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+  :bind
+  (("C-x b" . helm-mini)
+   ("C-x C-f" . helm-find-files)
+   ("M-x" . helm-M-x)
+   ("C-c a" . helm-git-grep)
+   ("C-c o" . helm-occur)
+   ("C-c r" . helm-show-kill-ring)
+   ("C-c m" . helm-man-woman)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Magit
@@ -327,15 +332,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Helm
-(global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-c a") 'helm-git-grep)
-(global-set-key (kbd "C-c o") 'helm-occur)
-(global-set-key (kbd "C-c r") 'helm-show-kill-ring)
-(global-set-key (kbd "C-c m") 'helm-man-woman)
 
 ;; Magit
 (global-set-key (kbd "C-c g") 'magit-status)
@@ -458,36 +454,3 @@
       browse-url-generic-program "google-chrome")
 
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
- '(custom-safe-themes
-   (quote
-    ("51b8c4adab95ff23b8f5cf07ea0b9805c8662936fe0d877d61a0dd02b6adc5f6" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
- '(fci-rule-color "#383838")
- '(vc-annotate-background "#2B2B2B")
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#BC8383")
-     (40 . "#CC9393")
-     (60 . "#DFAF8F")
-     (80 . "#D0BF8F")
-     (100 . "#E0CF9F")
-     (120 . "#F0DFAF")
-     (140 . "#5F7F5F")
-     (160 . "#7F9F7F")
-     (180 . "#8FB28F")
-     (200 . "#9FC59F")
-     (220 . "#AFD8AF")
-     (240 . "#BFEBBF")
-     (260 . "#93E0E3")
-     (280 . "#6CA0A3")
-     (300 . "#7CB8BB")
-     (320 . "#8CD0D3")
-     (340 . "#94BFF3")
-     (360 . "#DC8CC3"))))
- '(vc-annotate-very-old-color "#DC8CC3"))
