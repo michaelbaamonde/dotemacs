@@ -56,7 +56,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(region ((t (:background "dim gray")))))
+ '(region ((t (:background "dim gray"))))
+ '(sml/filename ((t (:inherit sml/global :foreground "slate gray" :weight bold)))))
 
 ;; Font
 (set-face-attribute 'default nil :height 100)
