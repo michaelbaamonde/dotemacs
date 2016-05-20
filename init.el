@@ -253,9 +253,8 @@
   :init
   (setq magit-last-seen-setup-instructions "1.4.0")
   :config
-  (bind-key "q" 'magit-quit-session magit-status-mode-map))
-
-(setq magit-auto-revert-mode t)
+  (bind-key "q" 'magit-quit-session magit-status-mode-map)
+  (setq magit-auto-revert-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Parens
