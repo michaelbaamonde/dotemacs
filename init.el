@@ -37,10 +37,6 @@
 ;; Appearance and defaults
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (use-package darkburn-theme
-;;   :ensure t
-;;   :init (load-theme 'darkburn t))
-
 (use-package stekene-theme
   :ensure t
   :init (load-theme 'stekene-dark t))
@@ -64,10 +60,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(helm-swoop-target-line-block-face
-   ((t (:background "light steel blue" :foreground "#222222"))))
- '(helm-swoop-target-line-face
-   ((t (:background "light steel blue" :foreground "#222222"))))
+ '(company-tooltip ((t (:background "lite slate gray" :foreground "black"))))
+ '(helm-candidate-number ((t (:background "slate gray" :foreground "black"))))
+ '(helm-swoop-target-line-block-face ((t (:background "light steel blue" :foreground "#222222"))))
+ '(helm-swoop-target-line-face ((t (:background "light steel blue" :foreground "#222222"))))
  '(magit-log-author ((t (:foreground "steel blue"))))
  '(magit-log-sha1 ((t (:foreground "deep sky blue"))))
  '(region ((t (:background "dim gray"))))
@@ -190,9 +186,11 @@
 (global-set-key (kbd "C-c w") 'ace-window)
 
 ;; Ace/Avy
-(global-set-key (kbd "M-l") 'avy-goto-line)
 
-(global-set-key (kbd "M-c") 'avy-goto-char)
+(use-package avy
+  :ensure t
+  :config (setq avy-keys '(97 115 100 102 106 107 108)) ;; home row
+  :bind ("M-c" . avy-goto-char))
 
 (setq ace-jump-mode-scope 'window)
 
@@ -467,4 +465,20 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(custom-safe-themes
+   (quote
+    ("2916d16e583c17bb2a1a9d231ea8ddcb3577f8cb97179eea689e91036213ff03" default)))
+ '(rainbow-identifiers-cie-l*a*b*-lightness 80)
+ '(rainbow-identifiers-cie-l*a*b*-saturation 18))
+
+;; company color
+
+(require 'color)
+
+(let ((bg (face-attribute 'default :background)))
+  (custom-set-faces
+   `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+   `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+   `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+   `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+   `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
