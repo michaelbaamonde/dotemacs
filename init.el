@@ -16,7 +16,9 @@
                       cider
                       clojure-mode
                       company
+                      company-go
                       es-mode
+                      go-eldoc
                       haskell-mode
                       helm
                       helm-git-grep
@@ -39,7 +41,7 @@
 
 (use-package stekene-theme
   :ensure t
-  :init (load-theme 'stekene-dark t))
+  :init (load-theme 'tao-yin))
 
 (use-package smart-mode-line
   :ensure t
@@ -399,6 +401,10 @@
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'clojure-mode-hook #'paredit-mode)
 
+;; (use-package paredit-everywhere
+;;   :ensure t
+;;   :init (add-hook 'prog-mode-hook 'paredit-everywhere-mode))
+
 ;; Org
 (setq org-src-fontify-natively t
       org-refile-targets '((nil . (:maxlevel . 2)))
@@ -460,16 +466,6 @@
       browse-url-generic-program "google-chrome")
 
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("2916d16e583c17bb2a1a9d231ea8ddcb3577f8cb97179eea689e91036213ff03" default)))
- '(rainbow-identifiers-cie-l*a*b*-lightness 80)
- '(rainbow-identifiers-cie-l*a*b*-saturation 18))
 
 ;; company color
 
@@ -482,3 +478,16 @@
    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+
+;; Golang
+(setenv "GOPATH" "/home/baamonde/code/go")
+(setq exec-path (cons "/usr/local/go/bin" exec-path))
+(add-to-list 'exec-path "/home/baamonde/code/go/bin")
+(add-hook 'before-save-hook 'gofmt-before-save)
+(require 'company-go)
+(require 'go-eldoc)
+(add-hook 'go-mode-hook 'go-eldoc-setup)
+(put 'downcase-region 'disabled nil)
+
+;; IRC
+(setq erc-hide-list '("JOIN" "PART" "QUIT"))
